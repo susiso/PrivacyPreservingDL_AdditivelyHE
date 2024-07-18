@@ -71,7 +71,7 @@ def general_neural_networks(x_train, y_train, x_test, y_test):
 
 
 def general_neural_networks_with_regularization(x_test, y_test, model):
-	lam = 0.0001
+	lam = 0.1
 	W = model.layers[1].get_weights()[0]
 	print(np.max(W))
 
@@ -94,14 +94,39 @@ def general_neural_networks_with_regularization(x_test, y_test, model):
 
 	return grad_part
 
+def laplace_noise_added(x_test, y_test, model):
+	loc = 0
+	scale = 0.01
+
+	# 勾配を求める x_test[3]が0の画像
+	input_data = x_test[3].reshape(-1, 20, 20)
+	target_data = y_test[3].reshape(-1, 10)
+ 
+	with tf.GradientTape() as tape:
+		# 順伝播
+		predictions = model(input_data)
+		# 損失の計算
+		loss = tf.keras.losses.categorical_crossentropy(target_data, predictions)
+
+	# 勾配の計算
+	gradients = tape.gradient(loss, model.layers[1].trainable_variables)
+	grad_part = np.zeros(400)
+	for i in range(400):
+		grad_part[i] = gradients[0][i, 0] + np.random.laplace(loc, scale)
+	print(grad_part)
+
+	return grad_part
+
 def main():
 	x_train, y_train, x_test, y_test = load_mnist()
 	input_data, grad_part_b, model = general_neural_networks(x_train, y_train, x_test, y_test)
 	grad_part_c = general_neural_networks_with_regularization(x_test, y_test, model)
+	grad_part_d = laplace_noise_added(x_test, y_test, model)
  
 	input_data = input_data.reshape(20, 20)
 	grad_part_b = grad_part_b.reshape(20, 20)
 	grad_part_c = grad_part_c.reshape(20, 20)
+	grad_part_d = grad_part_d.reshape(20, 20)
 
 	# (a)
 	plt.figure()
@@ -119,6 +144,11 @@ def main():
 	plt.figure()
 	sns.heatmap(grad_part_c, square=True, xticklabels=False, yticklabels=False, cmap="jet", vmin=-0.05, vmax=1.05)
 	plt.savefig("./result/c.png")
+	plt.close()
+
+	plt.figure()
+	sns.heatmap(grad_part_d, square=True, xticklabels=False, yticklabels=False, cmap="jet")
+	plt.savefig("./result/d.png")
 	plt.close()
  
     
