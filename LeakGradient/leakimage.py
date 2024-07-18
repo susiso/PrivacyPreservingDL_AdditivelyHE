@@ -67,37 +67,13 @@ def general_neural_networks(x_train, y_train, x_test, y_test):
 	for i in range(400):
 		grad_part[i] = gradients[0][i, 0]
 
-	return input_data, grad_part
+	return input_data, grad_part, model
 
 
-def general_neural_networks_with_regularization(x_train, y_train, x_test, y_test):
-	# parameter
-	batch_size = 200
-	learning_rate = 1e-4
-	epochs = 10
-	lam = 0.1
-
-	x_train, y_train, x_test, y_test = load_mnist()
-
-	# モデルの作成
-	model = tf.keras.models.Sequential([
-		tf.keras.layers.Flatten(input_shape=(20, 20)),
-		tf.keras.layers.Dense(25, activation=tf.nn.relu, use_bias=True, kernel_regularizer=tf.keras.regularizers.l2(lam)),
-		tf.keras.layers.Dense(10, activation=tf.nn.softmax, use_bias=True, kernel_regularizer=tf.keras.regularizers.l2(lam))
-	])
- 
-	# モデルのコンパイル
-	model.compile(optimizer='sgd',
-				loss='categorical_crossentropy',
-				metrics=['accuracy'])
-
-	# モデルの概要を表示
-	model.summary()
- 
-	# モデルの訓練
-	r = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs)
-
+def general_neural_networks_with_regularization(x_test, y_test, model):
+	lam = 0.0001
 	W = model.layers[1].get_weights()[0]
+	print(np.max(W))
 
 	# 勾配を求める x_test[3]が0の画像
 	input_data = x_test[3].reshape(-1, 20, 20)
@@ -111,18 +87,17 @@ def general_neural_networks_with_regularization(x_train, y_train, x_test, y_test
 
 	# 勾配の計算
 	gradients = tape.gradient(loss, model.layers[1].trainable_variables)
- 
 	grad_part = np.zeros(400)
 	for i in range(400):
-		grad_part[i] = (gradients[0][i, 0] + lam * W[i, 0])/ gradients[1][0]
+		grad_part[i] = (gradients[0][i, 0] + lam * W[i, 0]) / gradients[1][0]
 	print(grad_part)
 
 	return grad_part
 
 def main():
 	x_train, y_train, x_test, y_test = load_mnist()
-	input_data, grad_part_b = general_neural_networks(x_train, y_train, x_test, y_test)
-	grad_part_c = general_neural_networks_with_regularization(x_train, y_train, x_test, y_test)
+	input_data, grad_part_b, model = general_neural_networks(x_train, y_train, x_test, y_test)
+	grad_part_c = general_neural_networks_with_regularization(x_test, y_test, model)
  
 	input_data = input_data.reshape(20, 20)
 	grad_part_b = grad_part_b.reshape(20, 20)
@@ -142,7 +117,7 @@ def main():
 
 	# (c)
 	plt.figure()
-	sns.heatmap(grad_part_c, square=True, xticklabels=False, yticklabels=False, cmap="jet")
+	sns.heatmap(grad_part_c, square=True, xticklabels=False, yticklabels=False, cmap="jet", vmin=-0.05, vmax=1.05)
 	plt.savefig("./result/c.png")
 	plt.close()
  
