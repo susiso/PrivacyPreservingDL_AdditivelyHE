@@ -75,9 +75,7 @@ def general_neural_networks_with_regularization(x_train, y_train, x_test, y_test
 	batch_size = 200
 	learning_rate = 1e-4
 	epochs = 10
-	lam = 0.1
-
-	x_train, y_train, x_test, y_test = load_mnist()
+	lam = 0.001
 
 	# モデルの作成
 	model = tf.keras.models.Sequential([
@@ -119,14 +117,22 @@ def general_neural_networks_with_regularization(x_train, y_train, x_test, y_test
 
 	return grad_part
 
+def laplace_noise_add(grad_part):
+	loc = 0
+	scale = 0.000005
+	grad_part_noise = grad_part + np.random.laplace(loc, scale, size=(400))
+	return grad_part_noise
+
 def main():
 	x_train, y_train, x_test, y_test = load_mnist()
 	input_data, grad_part_b = general_neural_networks(x_train, y_train, x_test, y_test)
 	grad_part_c = general_neural_networks_with_regularization(x_train, y_train, x_test, y_test)
+	grad_part_d = laplace_noise_add(grad_part_b)
  
 	input_data = input_data.reshape(20, 20)
 	grad_part_b = grad_part_b.reshape(20, 20)
 	grad_part_c = grad_part_c.reshape(20, 20)
+	grad_part_d = grad_part_d.reshape(20, 20)
 
 	# (a)
 	plt.figure()
@@ -144,6 +150,12 @@ def main():
 	plt.figure()
 	sns.heatmap(grad_part_c, square=True, xticklabels=False, yticklabels=False, cmap="jet")
 	plt.savefig("./result/c.png")
+	plt.close()
+ 
+	# (d)
+	plt.figure()
+	sns.heatmap(grad_part_d, square=True, xticklabels=False, yticklabels=False, cmap="jet")
+	plt.savefig("./result/d.png")
 	plt.close()
  
     
