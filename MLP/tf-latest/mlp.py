@@ -34,11 +34,11 @@ model.compile(optimizer=Adam(learning_rate=1e-4),
 
 # モデルの訓練
 start = time.time()
-model.fit(train_images, train_labels, batch_size=50, epochs=10, validation_data=(test_images, test_labels))
+model.fit(train_images, train_labels, batch_size=50, epochs=9, validation_data=(test_images, test_labels))
 end = time.time()  
 time_diff = end - start  # 処理完了後の時刻から処理開始前の時刻を減算する
 
 # モデルの評価
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print(f'Test accuracy: {test_acc}')
-print("time elapsed : ", {time_diff})
+print(f"time elapsed : ", {time_diff})

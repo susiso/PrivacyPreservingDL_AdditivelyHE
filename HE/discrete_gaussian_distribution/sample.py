@@ -12,7 +12,7 @@ class sample():
 		random.seed(0)
 		self.s = 8
 		self.n_lwe = 3000
-		self.n_gd = 402250
+		self.n_gd = 20000
 
 	def sample_gauss(self, vec_name, row, col, seed=0):
 		vec = np.zeros((row, col))		 
@@ -44,14 +44,14 @@ def main():
  
 	s = 8
 	n_lwe = 3000
-	n_gd = 402250
-	R = np.zeros((n_lwe, n_gd)) #  s
-	S = np.zeros((n_lwe, n_gd)) #  s
-	A = np.zeros((n_lwe, n_lwe)) # 81.98023 s
-	e_1 = np.zeros((1, n_lwe)) # 0.58730 s
-	e_2 = np.zeros((1, n_lwe)) # 0.58250 s
-	e_3 = np.zeros((1, n_gd)) # 66.15693 s
-	m = np.zeros((1, n_gd)) # 1.46875 s
+	n_gd = 20000
+	R = np.zeros((n_lwe, n_gd)) #  10716.48199 s
+	S = np.zeros((n_lwe, n_gd)) #  10803.02530s
+	A = np.zeros((n_lwe, n_lwe)) # 25.34763 s
+	e_1 = np.zeros((1, n_lwe)) # 0.44916 s
+	e_2 = np.zeros((1, n_lwe)) # 0.43628 s
+	e_3 = np.zeros((1, n_gd)) # 2.90527 s
+	m = np.zeros((1, n_gd)) # 0.07339 s
  
 	start_time_R = time.time()
 	for i in tqdm(range(n_lwe)):
