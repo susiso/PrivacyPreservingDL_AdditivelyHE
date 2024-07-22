@@ -25,12 +25,12 @@ class sample():
 		sample_time = end_time - start_time
 		print(f"time_{vec_name}: {sample_time}")
   
-	def sample_uniform(self, vec_name, row, col, seed=0):
+	def sample_uniform(self, vec_name, row, col, num_max, seed=0):
 		vec = np.zeros((row, col))		 
 		start_time = time.time()
 		for i in tqdm(range(row)):
 			for j in tqdm(range(col), leave=False):
-				vec[i, j] = discretegauss.sample_uniform(pow(2, 77), self.rng)
+				vec[i, j] = discretegauss.sample_uniform(num_max, self.rng)
 		end_time = time.time()
 		np.savetxt(os.path.join(self.dir_path, f"{vec_name}.txt"), vec, fmt='%d')
 		sample_time = end_time - start_time

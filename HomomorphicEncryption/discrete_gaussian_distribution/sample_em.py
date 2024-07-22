@@ -8,7 +8,7 @@ def main():
 	sampler.sample_gauss("e_1_b", 1, sampler.n_lwe, 6)
 	sampler.sample_gauss("e_2_b", 1, sampler.n_lwe, 7)
 	sampler.sample_gauss("e_3_b", 1, sampler.n_gd, 8)
-	sampler.sample_uniform("m", 1, sampler.n_gd, 9)
+	sampler.sample_uniform("m", 1, sampler.n_gd, pow(2, 48)+1, 9)
 
 if __name__ == "__main__":
     main()
