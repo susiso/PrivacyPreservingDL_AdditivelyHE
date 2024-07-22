@@ -10,7 +10,7 @@ C++のコードのコンパイルにはboost multiprecision library(https://www.
 
 ### 離散ガウス分布
 discrete_gaussian_distributionではPythonで離散ガウス分布のサンプリングを行う。<br>
-discretegauss.pyが離散ガウス分布および一様分布のサンプリングを行うライブラリであり<br>、
+discretegauss.pyが離散ガウス分布および一様分布のサンプリングを行うライブラリであり、<br>
 https://github.com/IBM/discrete-gaussian-differential-privacy<br>
 から取得した。<br>
 sample.pyは上記のライブラリを使用してサンプリングを行うメソッドを記述したクラスを定義している。<br>
