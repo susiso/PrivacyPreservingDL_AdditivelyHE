@@ -1,6 +1,6 @@
 # Privacy-Preserving
 これは論文「Privacy-Preserving Deep Learning via Additively Homomorphic
-Encryption」を実装したリポジトリである。<br>
+Encryption」を再現実装したリポジトリである。<br>
 https://eprint.iacr.org/2017/715.pdf
 
 ## Homomorphic Encryption
