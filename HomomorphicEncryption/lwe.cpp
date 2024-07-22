@@ -90,7 +90,7 @@ void KeyGen(mp::int128_t **P, int **R, mp::int128_t **A, int **S){
             for (int k = 0; k < n_lwe; k++){
                 temp += A[i][k] * S[k][j];
             }
-            P[i][j] = p * R[i][j] - temp;
+            P[i][j] = (p * R[i][j] - temp) % q;
             temp = 0;
         }
     }
@@ -102,7 +102,7 @@ void Enc(int *e_1, int *e_2, int*e_3, mp::int128_t **A, mp::int128_t **P, mp::in
         for (int j = 0; j < n_lwe; j++){
             temp += e_1[j] * A[j][i];
         }
-        c_1[i] = temp + p * e_2[i];
+        c_1[i] = (temp + p * e_2[i]) % q;
         temp = 0;
     }
 
@@ -110,7 +110,7 @@ void Enc(int *e_1, int *e_2, int*e_3, mp::int128_t **A, mp::int128_t **P, mp::in
         for (int j = 0; j < n_lwe; j++){
             temp += e_1[j] * P[j][i];
         }
-        c_2[i] = temp + p * e_3[i] + m[i];
+        c_2[i] = (temp + p * e_3[i] + m[i]) % q;
         temp = 0;
     }
 }
@@ -121,7 +121,7 @@ void Dec(mp::int128_t *c_1, mp::int128_t *c_2, int **S, mp::int128_t *m_bar){
         for (int j = 0; j < n_lwe; j++){
             temp += c_1[j] * S[j][i];
         }
-        m_bar[i] = temp + c_2[i];
+        m_bar[i] = (temp + c_2[i]) % q;
         temp = 0;
         m_bar[i] %= p;
         if (m_bar[i] < 0){
@@ -132,10 +132,10 @@ void Dec(mp::int128_t *c_1, mp::int128_t *c_2, int **S, mp::int128_t *m_bar){
 
 void Add(mp::int128_t *c_1_a, mp::int128_t *c_2_a, mp::int128_t *c_1_b, mp::int128_t *c_2_b, mp::int128_t *c_1, mp::int128_t *c_2){
     for (int i = 0; i < n_lwe; i++){
-        c_1[i] = c_1_a[i] + c_1_b[i];
+        c_1[i] = (c_1_a[i] + c_1_b[i]) % q;
     }
     for (int i = 0; i < n_gd; i++){
-        c_2[i] = c_2_a[i] + c_2_b[i];
+        c_2[i] = (c_2_a[i] + c_2_b[i]) % q;
     }
 }
 
@@ -357,6 +357,15 @@ int main (){
     }
 
     KeyGen(P, R, A, S);
+    std::ofstream ofs_P("result/P.txt");
+
+    for (i = 0; i < n_lwe; i++){
+        for (j = 0; j < n_gd; j++){
+            ofs_P << P[i][j] << " ";
+        }
+        ofs_P << std::endl;
+    }
+    ofs_P.close();
 
     // Encryption
     std::cout << "Enc" << std::endl;
@@ -408,7 +417,7 @@ int main (){
     // Add 検証
     std::cout << "Add Output" << std::endl;
     for (i = 0; i < n_gd; i++){
-        m[i] = m[i] + m[i];
+        m[i] = (m[i] + m[i]) % p ;
     }
 
     Dec(c_1, c_2, S, m_bar);
