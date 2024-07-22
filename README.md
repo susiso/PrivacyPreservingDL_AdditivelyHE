@@ -6,6 +6,7 @@ https://eprint.iacr.org/2017/715.pdf
 ## Homomorphic Encryption
 論文のVI. Concrete Evaluations With an LWE-Based Encryptionの加法準同型暗号の実行時間を計測する。<br>
 C++のコードのコンパイルにはboost multiprecision library(https://www.boost.org/doc/libs/1_85_0/libs/multiprecision/doc/html/index.html)が必要である。
+まず、sample_A.py, sample_R.py, sample_S.py, sample_em.pyを実行してsample以下にテキストファイルを生成してから、lwe.outを実行することによって実行時間が測定できる。
 
 ### 離散ガウス分布
 discrete_gaussian_distributionではPythonで離散ガウス分布のサンプリングを行う。<br>
